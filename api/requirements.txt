@@ -1,0 +1,5 @@
+sqlalchemy
+alembic
+flask
+python-dotenv
+mysql-connector-python
