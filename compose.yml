@@ -1,0 +1,15 @@
+services:
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+    volumes:
+      - mysql_data:/var/lib/mysql
+  admin:
+    image: php:latest
+  api:
+    image: python:latest
+  frontend:
+    image: nginx:latest
+volumes:
+  mysql_data:
