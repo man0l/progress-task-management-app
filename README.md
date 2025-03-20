@@ -10,6 +10,10 @@
 
 `docker compose up -d`
 
+### run migrations
+
+`docker compose exec api alembic upgrade head` 
+
 ### Nagivigate to the admin
 
 `localhost:8000`
