@@ -21,7 +21,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     tasks: Mapped[List['Task']] = relationship(back_populates='user')
-    roles: Mapped[List['Role']] = relationship(secondary=user_roles, backref='users')
+    roles: Mapped[List['Role']] = relationship(secondary=user_roles, back_populates='users')
 
 class Task(Base):
     __tablename__ = 'tasks'
@@ -35,3 +35,4 @@ class Role(Base):
     __tablename__ = 'roles'
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
+    users: Mapped[List['User']] = relationship(secondary=user_roles, back_populates='roles')

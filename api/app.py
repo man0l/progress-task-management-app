@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 from database import init_db, db_session
 from models import User
+from decorators import role_required
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -12,6 +13,20 @@ init_db()
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET')
 jwt = JWTManager(app)
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return str(user.id)
+
+@jwt.additional_claims_loader
+def add_claims_to_access_token(user):
+    return {
+        "roles": [role.name for role in user.roles]
+    }
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    return db_session.query(User).filter_by(id=int(jwt_data["sub"])).first()
 
 @app.route('/')
 def hello():
@@ -48,18 +63,13 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"msg": "Bad email or password"}), 401
 
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=user)
     return jsonify(access_token=access_token)
 
 @app.route("/tasks", methods=["GET"])
 @jwt_required()
-def tasks():
-    current_user_id = int(get_jwt_identity())
-    user = db_session.query(User).get(current_user_id)
-    
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
-        
+@role_required(["admin", "user"])
+def tasks():        
     return jsonify(tasks=[])
 
 @app.teardown_appcontext
