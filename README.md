@@ -1,6 +1,8 @@
 # Task Management App
 
 ## How to run the app
+### ENV Variables
+Copy .env.example to .env
 
 ### Build
 

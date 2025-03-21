@@ -3,3 +3,4 @@ alembic
 flask
 python-dotenv
 mysql-connector-python
+flask-jwt-extended
