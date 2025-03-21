@@ -16,6 +16,8 @@ Copy .env.example to .env
 
 `docker compose exec api alembic upgrade head` 
 
+### Create an admin user
+`docker compose exec api python seed.py`
 ### Nagivigate to the admin
 
 `localhost:8000`
