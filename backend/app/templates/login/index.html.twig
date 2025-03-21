@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+
+    <h1 class="text-2xl font-bold">Login</h1>
+    {{ form_start(form, {attr: {'novalidate': 'novalidate'}}) }}
+        <div class="flex flex-col gap-2">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email) }}
+            <div class="text-red-500">
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+        <div class="flex flex-col gap-2">
+            {{ form_label(form.password) }}
+            {{ form_widget(form.password) }}
+            <div class="text-red-500">
+                {{ form_errors(form.password) }}
+            </div>
+        </div>
+        {{ form_rest(form) }}
+        <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded-md">Login</button>
+    {{ form_end(form) }}
+{% endblock %}
