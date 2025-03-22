@@ -12,7 +12,7 @@ interface Login {
     /**
      * @param string $email
      * @param string $password
-     * @return string The JWT token itself
+     * @return array [success, message, token]
      */
-    public function login(string $email, string $password): string;
+    public function login(string $email, string $password): array;
 }

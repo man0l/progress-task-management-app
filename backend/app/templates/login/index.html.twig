@@ -5,8 +5,21 @@
 {% block body %}
 
     <h1 class="text-2xl font-bold">Login</h1>
+
+    {% if app.session.flashBag.has('success') %}
+        <div class="bg-green-500 text-white p-2 rounded-md mt-2">
+            {{ app.session.flashBag.get('success')[0] }}
+        </div>
+    {% endif %}
+
+    {% if app.session.flashBag.has('error') %}
+        <div class="bg-red-500 text-white p-2 rounded-md mt-2">
+            {{ app.session.flashBag.get('error')[0] }}
+        </div>
+    {% endif %}
+
     {{ form_start(form, {attr: {'novalidate': 'novalidate'}}) }}
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 mt-2">
             {{ form_label(form.email) }}
             {{ form_widget(form.email) }}
             <div class="text-red-500">
