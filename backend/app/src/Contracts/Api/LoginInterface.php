@@ -4,7 +4,7 @@ namespace App\Contracts\Api;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-interface Login {
+interface LoginInterface {
     /**
      * @param HttpClientInterface $client
      */

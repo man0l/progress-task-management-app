@@ -4,12 +4,12 @@ namespace App\Contracts\Api;
 
 use App\Dto\Task as TaskDto;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
-interface Task {
+use Psr\Log\LoggerInterface;
+interface TaskInterface {
     /**
      * @param string $token
      */
-    public function __construct(HttpClientInterface $client);
+    public function __construct(HttpClientInterface $client, LoggerInterface $logger);
     /**
      * @return TaskDto[]
      */
