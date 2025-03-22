@@ -39,8 +39,15 @@ class LoginType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            // Configure your form options here
-            'error_bubbling' => true
+            'error_bubbling' => false,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'authenticate',
+            'attr' => [
+                'novalidate' => 'novalidate',
+            ],
+            'data_class' => null,
+            'mapped' => false,
         ]);
     }
 }

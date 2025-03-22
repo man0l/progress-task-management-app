@@ -20,27 +20,21 @@ final class LoginController extends AbstractController
     #[Route('/login', name: 'app_login')]    
     public function index(Request $request, Login $login): Response
     {
-        $form = $this->createForm(LoginType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
-            $response = $login->login($data['email'], $data['password']);
-            
-            if (!$response['success']) {
-                $this->addFlash('error', $response['message']);
-                return $this->redirectToRoute('app_login');
-            }
-
-            $this->addFlash('success', $response['message']);
-
-            $request->getSession()->set('token', $response['token']);
-            
-            return $this->redirectToRoute('app_dashboard');
-        } 
-
+        $form = $this->createForm(LoginType::class, null, [
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'authenticate',
+            'mapped' => false,
+        ]);
+        
         return $this->render('login/index.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/logout', name: 'app_logout')]
+    public function logout(): void
+    {
+        throw new \Exception('Implement logout method');
     }
 }
