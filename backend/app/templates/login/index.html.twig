@@ -33,7 +33,10 @@
                 {{ form_errors(form.password) }}
             </div>
         </div>
-        {{ form_rest(form) }}
+        
+        {# Explicitly display the CSRF token field with proper form namespace #}
+        <input type="hidden" name="login[_token]" value="{{ csrf_token('authenticate') }}" />
+        
         <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded-md">Login</button>
-    {{ form_end(form) }}
+    {{ form_end(form, {'render_rest': false}) }}
 {% endblock %}

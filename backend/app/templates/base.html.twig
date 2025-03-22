@@ -12,8 +12,24 @@
         {% endblock %}
     </head>
     <body>
-        <div class="flex flex-col items-center justify-center h-screen">
-            {% block body %}{% endblock %}
+        <div class="flex h-screen">
+            {% if app.user and 'ROLE_USER' in app.user.roles %}
+            <aside class="w-64 bg-gray-800 text-white p-4 flex-none">
+                <div class="text-m font-bold h-12 flex items-center">
+                    Task Management
+                </div>
+                <div>
+                    <ul>
+                        <li class="mt-4"><a href="{{ path('app_dashboard') }}">Dashboard</a></li>
+                        <li class="mt-4"><a href="{{ path('app_tasks') }}">Tasks</a></li>
+                        <li class="mt-4"><a href="{{ path('app_logout') }}">Logout</a></li>
+                    </ul>
+                </div>
+            </aside>
+            {% endif %}
+            <div class="flex-1 p-4">
+                {% block body %}{% endblock %}
+            </div>
         </div>
     </body>
 </html>
