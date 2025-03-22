@@ -2,10 +2,10 @@
 
 namespace App\Service\Api;
 
-use App\Contracts\Api\Login as LoginContract;
+use App\Contracts\Api\LoginInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-use App\Exceptions\ApiException;
-class Login implements LoginContract {
+
+class Login implements LoginInterface {
     public function __construct(
         private HttpClientInterface $api
     ) {}
@@ -14,8 +14,7 @@ class Login implements LoginContract {
         
         $response = $this->api->request('POST', '/login', [
             'json' => ['email' => $email, 'password' => $password]
-        ]);
-        
+        ]);        
 
         $result = $response->getContent(false);
         $result = json_decode($result);
@@ -24,14 +23,14 @@ class Login implements LoginContract {
             return [
                 'success' => false,
                 'message' => $result->msg,
-                'token' => null
+                'access_token' => null
             ];
         }
 
         return [
             'success' => true,
             'message' => 'Login successful',
-            'token' => $result->access_token
+            'access_token' => $result->access_token
         ];
     }
 }

@@ -2,26 +2,43 @@
 
 namespace App\Service\Api;
 
-use App\Contracts\Api\Task as TaskContract;
+use App\Contracts\Api\TaskInterface;
 use App\Dto\Task as TaskDto;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use App\Exceptions\ApiException;
-
-class Task implements TaskContract {
+use Psr\Log\LoggerInterface;
+class Task implements TaskInterface {
     public function __construct(
-        private HttpClientInterface $client
+        private HttpClientInterface $client,
+        private LoggerInterface $logger
     ) {}
 
     public function getTasks(): array {
-        $tasks = $this->client->request('GET', '/tasks')->toArray();
-
-        return array_map(function (array $task) {
-            return new TaskDto(
-                title: $task['title'],
-                description: $task['description'],
-                completed: $task['completed']
-            );
-        }, $tasks);
+        try {
+            $response = $this->client->request('GET', '/tasks');
+            $this->logger->info("Tasks API status code: " . $response->getStatusCode());
+            
+            $tasks = $response->toArray();
+            $this->logger->info("Received " . count($tasks) . " tasks from API");
+            // Check if tasks array is empty
+            if (empty($tasks['tasks']) || !is_array($tasks['tasks'])) {
+                $this->logger->info("No tasks found or invalid response format");
+                return [];
+            }
+            
+            return array_map(function (array $task) {
+                return new TaskDto(
+                    title: $task['title'],
+                    description: $task['description'],
+                    completed: $task['completed'],                
+                    created_at: $task['created_at'],
+                    updated_at: $task['updated_at']
+                );
+            }, $tasks['tasks']);
+        } catch (\Exception $e) {
+            $this->logger->error("Error fetching tasks: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function getTask(string $id): TaskDto {
@@ -34,7 +51,9 @@ class Task implements TaskContract {
             return new TaskDto(
                 title: $data['title'],
                 description: $data['description'],
-                completed: $data['completed']
+                completed: $data['completed'],
+                created_at: $data['created_at'],
+                updated_at: $data['updated_at']
             );
         }
 
