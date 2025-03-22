@@ -4,16 +4,10 @@ framework:
 
     # Note that the session will be started ONLY if you read or write from it.
     session: true
-
+    csrf_protection: ~
     #esi: true
     #fragments: true
-    http_client:
-        scoped_clients:
-            api:
-                base_uri: '%env(API_URL)%'
-                headers:
-                    'Content-Type': 'application/json'
-                    'Accept': 'application/json'
+    http_client: ~
 
 when@test:
     framework:
