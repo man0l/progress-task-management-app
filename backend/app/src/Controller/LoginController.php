@@ -10,6 +10,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class LoginController extends AbstractController
 {
+    #[Route('/', name: 'app_default')]
+    public function default(): Response
+    {
+        return $this->redirectToRoute('app_login');
+    }
+
     #[Route('/login', name: 'app_login')]
     public function index(Request $request): Response
     {
