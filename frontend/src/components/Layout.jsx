@@ -1,12 +1,10 @@
 import Header from './Header';
-import Navbar from './Navbar';
 import Footer from './Footer';
 
 const Layout = ({ children }) => {
   return (
-    <div>      
+    <div class="flex flex-col">      
       <Header />
-      <Navbar />
       {children}
       <Footer />
     </div>

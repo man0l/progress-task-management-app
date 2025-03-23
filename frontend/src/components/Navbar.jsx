@@ -1,10 +1,9 @@
 const Navbar = () => {
   return (
     <div>
-      <ul>
-        <li>Home</li>
-        <li>About</li>
-        <li>Contact</li>
+      <ul className="flex gap-4">
+        <li><a href="/">Home</a></li>
+        <li><a href="/tasks">Tasks</a></li>        
       </ul>
     </div>
   );
