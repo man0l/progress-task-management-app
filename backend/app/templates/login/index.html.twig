@@ -3,8 +3,9 @@
 {% block title %}Login{% endblock %}
 
 {% block body %}
-
-    <h1 class="text-2xl font-bold">Login</h1>
+    <div class="flex items-center justify-center h-screen">
+        <div class="w-1/5">
+            <h1 class="text-2xl font-bold">Login</h1>
 
     {% if app.session.flashBag.has('success') %}
         <div class="bg-green-500 text-white p-2 rounded-md mt-2">
@@ -18,7 +19,7 @@
         </div>
     {% endif %}
 
-    {{ form_start(form, {attr: {'novalidate': 'novalidate'}}) }}
+    {{ form_start(form, {attr: {'novalidate': 'novalidate', 'class': 'flex flex-col gap-2 mt-2 bg-gray-100 p-4 rounded-md'}}) }}
         <div class="flex flex-col gap-2 mt-2">
             {{ form_label(form.email) }}
             {{ form_widget(form.email) }}
@@ -36,7 +37,10 @@
         
         {# Explicitly display the CSRF token field with proper form namespace #}
         <input type="hidden" name="login[_token]" value="{{ csrf_token('authenticate') }}" />
-        
-        <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded-md">Login</button>
-    {{ form_end(form, {'render_rest': false}) }}
+            
+            <button type="submit" class="mt-2 bg-blue-500 text-white p-2 rounded-md">Login</button>
+        {{ form_end(form, {'render_rest': false}) }}
+        </div>
+    </div>
+    
 {% endblock %}
