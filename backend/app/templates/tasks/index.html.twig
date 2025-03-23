@@ -14,7 +14,7 @@
         <h1 class="text-lg font-semibold mb-3">Filters</h1>
         <form method="GET" action="{{ path('app_tasks') }}" class="flex items-center gap-4">
             <select class="border rounded p-2 w-48 bg-white" name="status" id="status">
-                <option value="all">All</option>
+                <option value="">All</option>
                 <option value="true" {% if app.request.query.get('status') == 'true' %}selected{% endif %}>Completed</option>
                 <option value="false" {% if app.request.query.get('status') == 'false' %}selected{% endif %}>Pending</option>
             </select>

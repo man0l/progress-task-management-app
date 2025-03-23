@@ -15,9 +15,12 @@ use App\Contracts\Api\UserInterface;
 final class TasksController extends AbstractController
 {    
     #[Route('/tasks', name: 'app_tasks')]
-    public function index(TaskInterface $taskApi, UserInterface $userApi): Response
-    {        
-        $tasks = $taskApi->getTasks();
+    public function index(TaskInterface $taskApi, UserInterface $userApi, Request $request): Response
+    {
+        $status = empty($request->query->get('status')) ? null : $request->query->getBoolean('status');
+        $user = empty($request->query->get('user')) ? null : (int)$request->query->get('user');
+
+        $tasks = $taskApi->getTasks($status, $user);
         $users = $userApi->getUsers();
             
         return $this->render('tasks/index.html.twig', [

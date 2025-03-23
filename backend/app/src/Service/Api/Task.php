@@ -13,9 +13,14 @@ class Task implements TaskInterface {
         private LoggerInterface $logger
     ) {}
 
-    public function getTasks(): array {
+    public function getTasks(?bool $status = null, ?int $user = null): array {
         try {
-            $response = $this->client->request('GET', '/tasks');
+            $response = $this->client->request('GET', '/tasks', [
+                'query' => [
+                    'status' => $status,
+                    'user' => $user
+                ]
+            ]);
             $this->logger->info("Tasks API status code: " . $response->getStatusCode());
             
             $tasks = $response->toArray();

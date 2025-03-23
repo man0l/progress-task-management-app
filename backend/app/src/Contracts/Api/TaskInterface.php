@@ -13,7 +13,7 @@ interface TaskInterface {
     /**
      * @return TaskDto[]
      */
-    public function getTasks(): array;
+    public function getTasks(?bool $status = null, ?int $user = null): array;
     /**
      * @param string $id
      * @return TaskDto

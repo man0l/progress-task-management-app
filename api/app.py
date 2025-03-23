@@ -69,9 +69,19 @@ def login():
 @app.route("/tasks", methods=["GET"])
 @jwt_required()
 @role_required(["admin", "user"])
-def tasks():
-    current_user = get_jwt_identity()
-    user_tasks = db_session.query(Task).all()
+def tasks():    
+    data = request.args
+
+    if not data:
+        user_tasks = db_session.query(Task).all()
+    else:
+        query = db_session.query(Task)
+        if 'status' in data:
+            query = query.filter_by(completed=data['status'])
+        if 'user' in data:
+            query = query.filter_by(user_id=data['user'])
+        user_tasks = query.all()
+
     return jsonify(tasks=[{
         'id': task.id,
         'user_id': task.user_id if task.user_id else None,
