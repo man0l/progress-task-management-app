@@ -81,7 +81,7 @@ class Task implements TaskInterface {
     
     public function updateTask(TaskDto $task): TaskDto {
 
-        $response = $this->client->request('PUT', '/tasks/' . $task->title, [
+        $response = $this->client->request('PUT', '/tasks/' . $task->id, [
             'json' => [
                 'title' => $task->title,
                 'description' => $task->description,
@@ -98,7 +98,7 @@ class Task implements TaskInterface {
     
     public function deleteTask(TaskDto $task): void {
 
-        $response = $this->client->request('DELETE', '/tasks/' . $task->title);
+        $response = $this->client->request('DELETE', '/tasks/' . $task->id);
 
         if ($response->getStatusCode() !== 200) {
             throw new ApiException('Failed to delete task');

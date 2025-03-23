@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+[id^="task-"] {
+    transition: all 0.3s ease;
+    opacity: 1;
+    max-height: 500px;
+    overflow: hidden;
+}
+
+[id^="task-"]:hover {
+    transform: scale(1.001);
+}
+
+.task-removing {
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    transform: translateX(100%);
+}

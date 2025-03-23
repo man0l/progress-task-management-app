@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Add Task{% endblock %}
+{% block title %}{% if task is defined %}Edit Task{% else %}Add Task{% endif %}{% endblock %}
 
 {% block body %}
     <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl font-bold">Add Task</h1>
+        <h1 class="text-xl font-bold">{% if task is defined %}Edit Task{% else %}Add Task{% endif %}</h1>
         <a href="{{ path('app_tasks') }}" class="bg-blue-500 text-white py-1 px-3 rounded">
             Back
         </a>
@@ -44,7 +44,7 @@
                 </div>
             </div>
             <button type="submit" class="bg-blue-500 text-white py-1 px-3 mt-2 rounded">
-                Save
+                {% if task is defined %}Update{% else %}Save{% endif %}
             </button>
         {{ form_end(form) }}
     </div>

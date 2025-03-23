@@ -78,8 +78,58 @@ final class TasksController extends AbstractController
     public function edit(TaskInterface $taskApi, Request $request, int $id): Response
     {
         $task = $taskApi->getTask($id);
+        
+        $formData = [
+            'title' => $task->title,
+            'description' => $task->description,
+            'completed' => $task->completed,
+        ];
+        
+        $form = $this->createForm(TaskType::class, $formData, [
+            'action' => $this->generateUrl('app_tasks_edit_post', ['id' => $id]),
+            'method' => 'POST',
+        ]);
 
-        return $this->render('tasks/edit.html.twig', [
+        return $this->render('tasks/add.html.twig', [
+            'form' => $form->createView(),
+            'task' => $task,
+        ]);
+    }
+
+    #[Route('/tasks/edit/{id}', name: 'app_tasks_edit_post', methods: ['POST'])]
+    public function editPost(TaskInterface $taskApi, Request $request, int $id): Response
+    {
+        $task = $taskApi->getTask($id);
+        
+        $form = $this->createForm(TaskType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $formData = $form->getData();
+                
+                $updatedTask = new Task(
+                    id: $task->id,
+                    title: $formData['title'],
+                    description: $formData['description'],
+                    completed: $formData['completed'] ?? false,
+                    created_at: $task->created_at,
+                    updated_at: (new \DateTime())->format('c')
+                );
+                
+                $taskApi->updateTask($updatedTask);
+                
+                $this->addFlash('success', 'Task updated successfully!');
+                return $this->redirectToRoute('app_tasks');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Failed to update task: ' . $e->getMessage());
+            }
+        } else if ($form->isSubmitted()) {
+            $this->addFlash('error', 'Please correct the errors in the form');
+        }
+
+        return $this->render('tasks/add.html.twig', [
+            'form' => $form->createView(),
             'task' => $task,
         ]);
     }
@@ -87,8 +137,10 @@ final class TasksController extends AbstractController
     #[Route('/tasks/delete/{id}', name: 'app_tasks_delete', methods: ['DELETE'])]
     public function delete(TaskInterface $taskApi, Request $request, int $id): Response
     {
+        $task = $taskApi->getTask($id);
+        $taskApi->deleteTask($task);
 
-        return $this->redirectToRoute('app_tasks');
+        return $this->json(['message' => 'Task deleted successfully']);
     }
 
     #[Route('/tasks/assign/{id}', name: 'app_tasks_assign', methods: ['GET'])]
