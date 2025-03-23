@@ -191,4 +191,17 @@ final class TasksController extends AbstractController
 
         return $this->redirectToRoute('app_tasks');
     }
+
+    #[Route('/tasks/complete/{id}', name: 'app_tasks_complete', methods: ['POST'])]
+    public function complete(TaskInterface $taskApi, Request $request, int $id): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $completed = $data['completed'] ?? false;
+        
+        $task = $taskApi->getTask($id);
+        $task->completed = $completed;
+        $taskApi->updateTask($task);
+
+        return $this->json(['message' => 'Task status updated successfully']);
+    }
 }
