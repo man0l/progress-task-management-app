@@ -1,20 +1,41 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello TasksController!{% endblock %}
+{% block title %}Tasks{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">Task List</h1>
+        <a href="{{ path('app_tasks_add') }}" class="bg-blue-500 text-white py-1 px-3 rounded">
+            Add Task
+        </a>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/manol/Projects/progress-task-app/backend/app/src/Controller/TasksController.php</code></li>
-        <li>Your template at <code>/home/manol/Projects/progress-task-app/backend/app/templates/tasks/index.html.twig</code></li>
-    </ul>
-</div>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded {% if label == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    <div class="rounded border">
+        {% if tasks is not empty %}
+        <div class="divide-y">
+            <!-- Task items -->
+            {% for task in tasks %}
+                <div class="p-3 flex items-center">
+                    {{ task.title }}
+                </div>
+            {% endfor %}
+            <!-- End of Task items -->
+        </div>
+        {% else %}
+            <div class="p-3">
+                No tasks found. You might add one 
+                <a href="{{ path('app_tasks_add') }}" class="text-blue-500">
+                    here
+                </a>
+            </div>
+        {% endif %}
+    </div>    
 {% endblock %}

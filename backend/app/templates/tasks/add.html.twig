@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Add Task{% endblock %}
+
+{% block body %}
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">Add Task</h1>
+        <a href="{{ path('app_tasks') }}" class="bg-blue-500 text-white py-1 px-3 rounded">
+            Back
+        </a>
+    </div>
+    
+    {# Flash messages #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded {% if label == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    <div class="w-1/5">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+            <div class="flex flex-col gap-2 mt-2">
+                {{ form_label(form.title) }}
+                {{ form_widget(form.title, {'attr': {'class': 'border rounded p-2'}}) }}
+                <div class="text-red-500">
+                    {{ form_errors(form.title) }}
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 mt-2">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'border rounded p-2'}}) }}
+                <div class="text-red-500">
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 items-start mt-2">
+                {{ form_label(form.completed) }}
+                {{ form_widget(form.completed) }}
+                <div class="text-red-500">
+                    {{ form_errors(form.completed) }}
+                </div>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white py-1 px-3 mt-2 rounded">
+                Save
+            </button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
