@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% if user is defined %}Edit User{% else %}Add User{% endif %}{% endblock %}
+
+{% block body %}
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">{% if user is defined %}Edit User{% else %}Add User{% endif %}</h1>
+        <a href="{{ path('app_users') }}" class="bg-blue-500 text-white py-1 px-3 rounded">
+            Back
+        </a>
+    </div>
+    
+    {# Flash messages #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mb-4 p-3 rounded {% if label == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    <div class="w-1/5">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+            <div class="flex flex-col gap-2 mt-2">
+                {{ form_label(form.email) }}
+                {{ form_widget(form.email, {'attr': {'class': 'border rounded p-2'}}) }}
+                <div class="text-red-500">
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+            {% if user is not defined %}
+                <div class="flex flex-col gap-2 mt-2">
+                    {{ form_label(form.password) }}
+                    {{ form_widget(form.password, {'attr': {'class': 'border rounded p-2'}}) }}
+                    <div class="text-red-500">
+                        {{ form_errors(form.password) }}
+                    </div>
+                </div>
+            {% endif %}
+            <button type="submit" class="bg-blue-500 text-white py-1 px-3 mt-2 rounded">
+                {% if task is defined %}Update{% else %}Save{% endif %}
+            </button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

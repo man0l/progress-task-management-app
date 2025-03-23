@@ -29,6 +29,11 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/dashboard, roles: [ROLE_USER, ROLE_ADMIN] }
         - { path: ^/tasks, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/users, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/users/add, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/users/edit, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/users/delete, roles: [ROLE_ADMIN] }
+
 
 when@test:
     security:
