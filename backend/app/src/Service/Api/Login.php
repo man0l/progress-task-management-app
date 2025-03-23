@@ -22,7 +22,7 @@ class Login implements LoginInterface {
         if ($response->getStatusCode() !== 200) {
             return [
                 'success' => false,
-                'message' => $result->msg,
+                'message' => isset($result->msg) ? $result->msg : 'Login failed',
                 'access_token' => null
             ];
         }
