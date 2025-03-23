@@ -22,7 +22,8 @@ class UserType extends AbstractType
             ],
         ]);
 
-        if (!$builder->getData()) {
+        // Only add password field for new users (when creating)
+        if ($options['is_create']) {
             $builder->add('password', PasswordType::class, [
                 'label' => 'Password',
                 'constraints' => [
@@ -46,6 +47,7 @@ class UserType extends AbstractType
             'attr' => [
                 'novalidate' => 'novalidate',
             ],
+            'is_create' => false, // Default to update mode
         ]);
     }
 }

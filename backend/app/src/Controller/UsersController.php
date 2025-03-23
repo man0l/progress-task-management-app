@@ -27,6 +27,7 @@ final class UsersController extends AbstractController
         $form = $this->createForm(UserType::class, null, [
             'action' => $this->generateUrl('app_users_add_post'),
             'method' => 'POST',
+            'is_create' => true,
         ]);
         return $this->render('users/add.html.twig', [
             'form' => $form->createView(),
@@ -36,7 +37,9 @@ final class UsersController extends AbstractController
     #[Route('/users/add', name: 'app_users_add_post', methods: ['POST'])]
     public function addPost(Request $request, User $userApi): Response
     {
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(UserType::class, null, [
+            'is_create' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -74,6 +77,7 @@ final class UsersController extends AbstractController
         $form = $this->createForm(UserType::class, $formData, [
             'action' => $this->generateUrl('app_users_edit_post', ['id' => $id]),
             'method' => 'POST',
+            'is_create' => false,
         ]);
 
         return $this->render('users/add.html.twig', [
@@ -87,7 +91,9 @@ final class UsersController extends AbstractController
     {
         $user = $userApi->getUser($id);
         
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(UserType::class, null, [
+            'is_create' => false,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
