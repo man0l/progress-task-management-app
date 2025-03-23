@@ -11,5 +11,7 @@ class User {
         #[Assert\NotBlank]
         #[Assert\Email]
         public string $email,
+        #[Assert\Length(min: 6)]
+        public ?string $password = null
     ) {}
 }
