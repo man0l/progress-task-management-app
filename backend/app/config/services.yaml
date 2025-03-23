@@ -38,6 +38,12 @@ services:
             $client: '@App\Service\Api\AuthenticatedApiClient'
             $logger: '@logger'
 
+    App\Contracts\Api\UserInterface: '@App\Service\Api\User'
+
+    App\Service\Api\User:
+        arguments:
+            $client: '@App\Service\Api\AuthenticatedApiClient'
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     

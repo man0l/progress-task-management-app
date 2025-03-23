@@ -46,9 +46,19 @@
                     </div>
                     <div class="text-sm font-normal text-gray-500 mt-2">{{ task.description }}</div>
                     {% if task.completed %}
-                        <div class="mt-2"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Completed</span></div>
+                        <div class="mt-2 flex gap-2">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Completed</span>
+                            {% if task.user %}
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Assigned to {{ task.user }}</span>
+                            {% endif %}
+                        </div>
                     {% else %}
-                        <div class="mt-2"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Pending</span></div>
+                        <div class="mt-2 flex gap-2">
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Pending</span>
+                            {% if task.user %}
+                                <span class="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Assigned to {{ task.user }}</span>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
             {% endfor %}

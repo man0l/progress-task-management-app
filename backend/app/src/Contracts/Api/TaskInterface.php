@@ -34,4 +34,11 @@ interface TaskInterface {
      * @return void
      */
     public function deleteTask(TaskDto $task): void;
+
+    /**
+     * @param TaskDto $task
+     * @param int $userId
+     * @return TaskDto
+     */
+    public function assignTask(TaskDto $task, int $userId): TaskDto;
 }

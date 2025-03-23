@@ -29,6 +29,8 @@ class Task implements TaskInterface {
             return array_map(function (array $task) {
                 return new TaskDto(
                     id: $task['id'],
+                    user_id: $task['user_id'] ?? null,
+                    user: $task['user'] ?? null,
                     title: $task['title'],
                     description: $task['description'],
                     completed: $task['completed'],                
@@ -51,6 +53,8 @@ class Task implements TaskInterface {
 
             return new TaskDto(
                 id: $data['id'],
+                user_id: $data['user_id'] ?? null,
+                user: $data['user'] ?? null,
                 title: $data['title'],
                 description: $data['description'],
                 completed: $data['completed'],
@@ -103,5 +107,29 @@ class Task implements TaskInterface {
         if ($response->getStatusCode() !== 200) {
             throw new ApiException('Failed to delete task');
         }
+    }
+
+    public function assignTask(TaskDto $task, int $userId): TaskDto {
+        $response = $this->client->request('POST', '/tasks/' . $task->id . '/assign', [
+            'json' => [
+                'user_id' => $userId
+            ]
+        ]);
+        
+        if ($response->getStatusCode() === 200) {
+            $data = $response->toArray();
+            return new TaskDto(
+                id: $data['id'],
+                user_id: $data['user_id'] ?? null,
+                user: $data['user'] ?? null,
+                title: $data['title'],
+                description: $data['description'],
+                completed: $data['completed'],
+                created_at: $data['created_at'],
+                updated_at: $data['updated_at']
+            );
+        }
+        
+        throw new ApiException('Failed to assign task');
     }
 }

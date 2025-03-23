@@ -3,14 +3,14 @@
 @tailwind utilities;
 
 [id^="task-"] {
-    transition: all 0.3s ease;
+    transition: all 0.3s ease-in-out;
     opacity: 1;
     max-height: 500px;
     overflow: hidden;
 }
 
 [id^="task-"]:hover {
-    transform: scale(1.001);
+    transform: scale(1.01);
 }
 
 .task-removing {

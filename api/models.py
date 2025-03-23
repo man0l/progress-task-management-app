@@ -26,7 +26,7 @@ class User(Base):
 class Task(Base):
     __tablename__ = 'tasks'
     id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=True)
     user: Mapped['User'] = relationship(back_populates='tasks')
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=False)

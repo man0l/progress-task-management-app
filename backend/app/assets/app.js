@@ -10,25 +10,45 @@ document.addEventListener('DOMContentLoaded', () => {
    document.querySelectorAll('[data-trigger]').forEach(element => {
       element.addEventListener('click', (e) => {
          e.preventDefault();
-         const id = element.dataset.id;
-         const task = document.getElementById(`task-${id}`);
-         if (confirm('Are you sure you want to delete this task?')) {
-            
-            const xhr = new XMLHttpRequest();
-            xhr.open('DELETE', element.href);
-            xhr.onload = function() {
-                if (xhr.status === 200) {                    
-                    task.classList.add('task-removing');
-                    
-                    setTimeout(() => {
-                        task.remove();
-                    }, 600);
-                }
-            };
-            xhr.send();
-            return false;
+
+         switch (element.dataset.trigger) {
+            case 'delete-task':
+               removeTask(e, element);
+               break;
+            // case 'assign-task':
+            //    assignTask(e, element);
+            //    break;
+            default:
+               break;
          }
       });
    });
 });
+
+function removeTask(e, element) {
+    const id = element.dataset.id;
+    const task = document.getElementById(`task-${id}`);
+    if (confirm('Are you sure you want to delete this task?')) {
+       
+       const xhr = new XMLHttpRequest();
+       xhr.open('DELETE', element.href);
+       xhr.onload = function() {
+           if (xhr.status === 200) {                    
+               task.classList.add('task-removing');
+               
+               setTimeout(() => {
+                   task.remove();
+               }, 600);
+           }
+       };
+       xhr.send();
+       return false;
+    }
+}
+
+// function assignTask(e, element) {
+//     const id = element.dataset.id;
+//     const task = document.getElementById(`task-${id}`);
+//     console.log(task);
+// }
 

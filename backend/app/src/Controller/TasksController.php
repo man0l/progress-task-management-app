@@ -8,8 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\TaskType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use App\Dto\Task;
+use App\Form\AssignType;
+use App\Contracts\Api\UserInterface;
 
 final class TasksController extends AbstractController
 {    
@@ -51,6 +52,7 @@ final class TasksController extends AbstractController
                 
                 $taskDto = new Task(
                     id: 0,
+                    user_id: null,
                     title: $formData['title'],
                     description: $formData['description'],
                     completed: $formData['completed'] ?? false,
@@ -110,6 +112,8 @@ final class TasksController extends AbstractController
                 
                 $updatedTask = new Task(
                     id: $task->id,
+                    user_id: $task->user_id ?? null,
+                    user: $task->user ?? null,
                     title: $formData['title'],
                     description: $formData['description'],
                     completed: $formData['completed'] ?? false,
@@ -144,10 +148,47 @@ final class TasksController extends AbstractController
     }
 
     #[Route('/tasks/assign/{id}', name: 'app_tasks_assign', methods: ['GET'])]
-    public function assign(TaskInterface $taskApi, Request $request, int $id): Response
+    public function assign(TaskInterface $taskApi, UserInterface $userApi, int $id): Response
     {
+        $task = $taskApi->getTask($id);
+        $users = $userApi->getUsers();
+        
+        $form = $this->createForm(AssignType::class, ['users' => $users], [
+            'action' => $this->generateUrl('app_tasks_assign_post', ['id' => $id]),
+            'method' => 'POST',
+        ]);
+
+        return $this->render('tasks/assign.html.twig', [
+            'task' => $task,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/tasks/assign/{id}', name: 'app_tasks_assign_post', methods: ['POST'])]
+    public function assignPost(TaskInterface $taskApi, UserInterface $userApi, Request $request, int $id): Response
+    {
+        $task = $taskApi->getTask($id);
+        $users = $userApi->getUsers();
+
+        $form = $this->createForm(AssignType::class, ['users' => $users]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $formData = $form->getData();
+                $taskApi->assignTask($task, $formData['assignee']);
+                $this->addFlash('success', 'Task assigned successfully!');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Failed to assign task: ' . $e->getMessage());
+            }
+        } else if ($form->isSubmitted()) {
+            $this->addFlash('error', 'Please correct the errors in the form');
+            return $this->render('tasks/assign.html.twig', [
+                'task' => $task,
+                'form' => $form->createView(),
+            ]);
+        }
 
         return $this->redirectToRoute('app_tasks');
     }
-    
 }

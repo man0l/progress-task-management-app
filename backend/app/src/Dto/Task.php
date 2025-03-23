@@ -8,6 +8,8 @@ class Task {
     public function __construct(
         #[Assert\NotBlank]
         public int $id,
+        public ?int $user_id = null,
+        public ?string $user = null,
         #[Assert\NotBlank]
         #[Assert\Length(min: 3, max: 255)]
         public string $title,
