@@ -50,6 +50,7 @@ final class TasksController extends AbstractController
                 $currentTime = (new \DateTime())->format('c');
                 
                 $taskDto = new Task(
+                    id: 0,
                     title: $formData['title'],
                     description: $formData['description'],
                     completed: $formData['completed'] ?? false,
@@ -71,5 +72,30 @@ final class TasksController extends AbstractController
         return $this->render('tasks/add.html.twig', [
             'form' => $form->createView(),
         ]);
-    }    
+    }
+
+    #[Route('/tasks/edit/{id}', name: 'app_tasks_edit', methods: ['GET'])]
+    public function edit(TaskInterface $taskApi, Request $request, int $id): Response
+    {
+        $task = $taskApi->getTask($id);
+
+        return $this->render('tasks/edit.html.twig', [
+            'task' => $task,
+        ]);
+    }
+
+    #[Route('/tasks/delete/{id}', name: 'app_tasks_delete', methods: ['DELETE'])]
+    public function delete(TaskInterface $taskApi, Request $request, int $id): Response
+    {
+
+        return $this->redirectToRoute('app_tasks');
+    }
+
+    #[Route('/tasks/assign/{id}', name: 'app_tasks_assign', methods: ['GET'])]
+    public function assign(TaskInterface $taskApi, Request $request, int $id): Response
+    {
+
+        return $this->redirectToRoute('app_tasks');
+    }
+    
 }

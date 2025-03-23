@@ -33,12 +33,15 @@
                             <span class="text-sm text-gray-500">
                                 {{ task.created_at| date('d M Y') }}
                             </span>
-                            <a href="{{ path('app_tasks_edit', {'id': task.id}) }}" class="size-5 text-blue-500 hover:text-red-700">
+                            <a href="{{ path('app_tasks_assign', {'id': task.id}) }}" class="size-5 text-blue-500 hover:text-red-700" data-modal-target="modal-assign">
+                                {{ ux_icon('material-symbols:person') }} 
+                            </a>
+                            <a href="{{ path('app_tasks_edit', {'id': task.id}) }}" class="size-5 text-blue-500 hover:text-red-700" data-modal-target="modal-edit">
                                 {{ ux_icon('material-symbols:edit') }}                                
                             </a>
-                            <a href="{{ path('app_tasks_delete', {'id': task.id}) }}" class=" size-5 text-blue-500 hover:text-red-700">
+                            <a href="{{ path('app_tasks_delete', {'id': task.id}) }}" class="size-5 text-blue-500 hover:text-red-700" data-modal-target="modal-delete">
                                 {{ ux_icon('material-symbols:delete') }} 
-                            </a>
+                            </a>  
                         </div>
                     </div>
                     <div class="text-sm font-normal text-gray-500 mt-2">{{ task.description }}</div>
