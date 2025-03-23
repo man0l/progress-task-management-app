@@ -3,7 +3,7 @@ import Footer from './Footer';
 
 const Layout = ({ children }) => {
   return (
-    <div class="flex flex-col">      
+    <div className="flex flex-col">      
       <Header />
       {children}
       <Footer />
