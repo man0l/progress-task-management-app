@@ -28,6 +28,7 @@ class Task implements TaskInterface {
             
             return array_map(function (array $task) {
                 return new TaskDto(
+                    id: $task['id'],
                     title: $task['title'],
                     description: $task['description'],
                     completed: $task['completed'],                
@@ -49,6 +50,7 @@ class Task implements TaskInterface {
             $data = $response->toArray();
 
             return new TaskDto(
+                id: $data['id'],
                 title: $data['title'],
                 description: $data['description'],
                 completed: $data['completed'],

@@ -7,6 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Task {
     public function __construct(
         #[Assert\NotBlank]
+        public int $id,
+        #[Assert\NotBlank]
         #[Assert\Length(min: 3, max: 255)]
         public string $title,
         #[Assert\NotBlank]
