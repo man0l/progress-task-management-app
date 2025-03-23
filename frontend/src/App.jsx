@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Home from './components/Home'
+import Login from './components/Login'
 import { AuthProvider } from './contexts/AuthContext'
 
 import { BrowserRouter, Routes, Route } from "react-router";
@@ -12,6 +13,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
