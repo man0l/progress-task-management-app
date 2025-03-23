@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table, Boolean, Index
 from sqlalchemy.orm import Mapped, relationship, mapped_column 
 from sqlalchemy.sql import func
 
@@ -23,6 +23,8 @@ class User(Base):
     tasks: Mapped[List['Task']] = relationship(back_populates='user')
     roles: Mapped[List['Role']] = relationship(secondary=user_roles, back_populates='users')
 
+Index('idx_users_email_password', User.email, User.password)
+
 class Task(Base):
     __tablename__ = 'tasks'
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -33,6 +35,9 @@ class Task(Base):
     completed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+
+Index('idx_tasks_user_id', Task.user_id)
+Index('idx_tasks_completed_user_id', Task.completed, Task.user_id)
 
 class Role(Base):
     __tablename__ = 'roles'
