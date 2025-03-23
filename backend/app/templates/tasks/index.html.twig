@@ -3,11 +3,31 @@
 {% block title %}Tasks{% endblock %}
 
 {% block body %}
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex justify-between items-center mb-6">
         <h1 class="text-xl font-bold">Task List</h1>
         <a href="{{ path('app_tasks_add') }}" class="bg-blue-500 text-white py-1 px-3 rounded">
             Add Task
         </a>
+    </div>
+
+    <div class="mb-6">
+        <h1 class="text-lg font-semibold mb-3">Filters</h1>
+        <form method="GET" action="{{ path('app_tasks') }}" class="flex items-center gap-4">
+            <select class="border rounded p-2 w-48 bg-white" name="status" id="status">
+                <option value="all">All</option>
+                <option value="true" {% if app.request.query.get('status') == 'true' %}selected{% endif %}>Completed</option>
+                <option value="false" {% if app.request.query.get('status') == 'false' %}selected{% endif %}>Pending</option>
+            </select>
+            <select class="border rounded p-2 w-48 bg-white" name="user" id="user">
+                <option value="">All Users</option>
+                {% for user in users %}
+                    <option value="{{ user.id }}" {% if app.request.query.get('user') == user.id %}selected{% endif %}>{{ user.email }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                Filter
+            </button>
+        </form>
     </div>
 
     {% for label, messages in app.flashes %}
