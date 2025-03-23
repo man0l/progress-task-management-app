@@ -16,15 +16,37 @@
                 {{ message }}
             </div>
         {% endfor %}
-    {% endfor %}
+    {% endfor %}    
     
-    <div class="rounded border">
+    <div class="rounded">
         {% if tasks is not empty %}
-        <div class="divide-y">
+        <div class="space-y-4 p-2">
             <!-- Task items -->
             {% for task in tasks %}
-                <div class="p-3 flex items-center">
-                    {{ task.title }}
+                <div class="p-4 bg-white rounded bg-gray-100">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" {% if task.completed %}checked{% endif %} class="w-5 h-5 rounded" disabled>
+                            <div class="text-lg font-bold">{{ task.title }}</div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm text-gray-500">
+                                {{ task.created_at| date('d M Y') }}
+                            </span>
+                            <a href="{{ path('app_tasks_edit', {'id': task.id}) }}" class="size-5 text-blue-500 hover:text-red-700">
+                                {{ ux_icon('material-symbols:edit') }}                                
+                            </a>
+                            <a href="{{ path('app_tasks_delete', {'id': task.id}) }}" class=" size-5 text-blue-500 hover:text-red-700">
+                                {{ ux_icon('material-symbols:delete') }} 
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-sm font-normal text-gray-500 mt-2">{{ task.description }}</div>
+                    {% if task.completed %}
+                        <div class="mt-2"><span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Completed</span></div>
+                    {% else %}
+                        <div class="mt-2"><span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Pending</span></div>
+                    {% endif %}
                 </div>
             {% endfor %}
             <!-- End of Task items -->
