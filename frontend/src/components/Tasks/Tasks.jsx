@@ -10,6 +10,7 @@ import Preloader from '../common/Preloader';
 import TaskItem from './TaskItem';
 import Modal from '../common/Modal';
 import TaskForm from './TaskForm';
+
 const Tasks = () => {
   const [filters, setFilters] = useState({
     status: '',
@@ -17,9 +18,11 @@ const Tasks = () => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  
   const { state, isInitialized, logout, isTokenExpired } = useAuth();
   const navigate = useNavigate();
-  const { tasks, isLoading, error, setError, updateTask } = useTasks(state, isInitialized, filters, logout, navigate);  
+  const { tasks, isLoading, error, setError, updateTask, createTask } = useTasks(state, isInitialized, filters, logout, navigate);  
   const { users } = useUsers(state, isInitialized);
 
   useEffect(() => {
@@ -69,11 +72,43 @@ const Tasks = () => {
       setError(`Failed to update task status: ${err.message}`);
     }
   };
+  
+  const handleOpenModal = (task = null) => {
+    setSelectedTask(task);
+    setIsModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    // Reset selected task after modal closes
+    setTimeout(() => {
+      setSelectedTask(null);
+    }, 300); // Small delay to allow the modal animation to complete
+  };
 
-  const handleTaskSubmit = async (event) => {
-    event.preventDefault();
-    console.log(event);
-    return false;
+  const handleTaskSubmit = async (taskData) => {
+    if (isTokenExpired()) {
+      setError("Your session has expired. Please log in again.");
+      throw new Error("Session expired");
+    }
+    
+    try {
+      if (selectedTask) {
+        // Update existing task
+        await updateTask(selectedTask.id, taskData);
+      } else {
+        // Create new task
+        await createTask(taskData);
+      }
+      
+      // Close modal after successful submission
+      handleCloseModal();
+      
+    } catch (err) {
+      console.error('Error submitting task:', err);
+      setError(`Failed to ${selectedTask ? 'update' : 'create'} task: ${err.message}`);
+      throw err; // Re-throw to let the form component handle it
+    }
   };
   
   if (!isInitialized) {
@@ -87,8 +122,11 @@ const Tasks = () => {
       <div className="p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold">Task List</h1>
-          <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" onClick={() => setIsModalOpen(true)}>
-              Add Task
+          <button 
+            className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" 
+            onClick={() => handleOpenModal()}
+          >
+            Add Task
           </button>
         </div>
 
@@ -112,7 +150,12 @@ const Tasks = () => {
           ) : tasks.length > 0 ? (
             <div className="space-y-4 p-2">
               {tasks.map(task => (
-                <TaskItem key={task.id} task={task} handleTaskComplete={handleTaskComplete} />
+                <TaskItem 
+                  key={task.id} 
+                  task={task} 
+                  handleTaskComplete={handleTaskComplete}
+                  onEdit={() => handleOpenModal(task)}
+                />
               ))}
             </div>
           ) : (
@@ -120,8 +163,11 @@ const Tasks = () => {
           )}
         </div>    
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <TaskForm task={null} form={null} handleSubmit={handleTaskSubmit} />
+      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <TaskForm 
+          task={selectedTask} 
+          onSubmit={handleTaskSubmit} 
+        />
       </Modal>
     </Layout>
   );

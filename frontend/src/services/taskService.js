@@ -25,4 +25,17 @@ const apiUpdateTask = async (token, task) => {
   return response;
 };
 
-export { apiFetchTasks, apiUpdateTask };
+const apiCreateTask = async (token, task) => {
+  const response = await fetch(`http://localhost:5000/tasks`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(task)
+  });
+
+  return response;
+};
+
+export { apiFetchTasks, apiUpdateTask, apiCreateTask };

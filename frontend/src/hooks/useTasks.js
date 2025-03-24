@@ -1,4 +1,4 @@
-import { apiFetchTasks, apiUpdateTask } from '../services/taskService';
+import { apiFetchTasks, apiUpdateTask, apiCreateTask } from '../services/taskService';
 import { useState, useEffect } from 'react';
 
 const useTasks = (state, isInitialized, filters, logout, navigate) => {
@@ -74,7 +74,32 @@ const useTasks = (state, isInitialized, filters, logout, navigate) => {
     }
   };
 
-  return { tasks, setTasks, isLoading, error, setError, updateTask };
+  const createTask = async (taskData) => {
+    try {
+      const response = await apiCreateTask(state.token, taskData);
+
+      if (response.status === 401) {
+        setError("Your session has expired. Please log in again.");
+        logout();
+        navigate('/login');
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to create task: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setTasks(prev => [...prev, data.task]);
+      return data.task;
+    } catch (err) {
+      console.error('Error creating task:', err);
+      setError(`Failed to create task: ${err.message}`);
+      throw err;
+    }
+  };
+
+  return { tasks, setTasks, isLoading, error, setError, updateTask, createTask };
 };
 
 export default useTasks;
