@@ -49,4 +49,9 @@ const apiDeleteTask = async (token, task) => {
   return response;
 };
 
-export { apiFetchTasks, apiUpdateTask, apiCreateTask, apiDeleteTask };
+const apiAssignTask = async (token, task) => {
+    const response = await apiUpdateTask(token, task); 
+    return response;
+}
+
+export { apiFetchTasks, apiUpdateTask, apiCreateTask, apiDeleteTask, apiAssignTask };

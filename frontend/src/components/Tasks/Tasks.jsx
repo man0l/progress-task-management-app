@@ -10,6 +10,7 @@ import Preloader from '../common/Preloader';
 import TaskItem from './TaskItem';
 import Modal from '../common/Modal';
 import TaskForm from './TaskForm';
+import AssignForm from './AssignForm';
 
 const Tasks = () => {
   const [filters, setFilters] = useState({
@@ -17,13 +18,24 @@ const Tasks = () => {
     user: ''
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [modalState, setModalState] = useState({
+    type: null,
+    isOpen: false,
+    task: null
+  });
   
   const { state, isInitialized, logout, isTokenExpired } = useAuth();
   const navigate = useNavigate();
-  const { tasks, isLoading, error, setError, updateTask, createTask, deleteTask } = useTasks(state, isInitialized, filters, logout, navigate);  
+  const { 
+          tasks, 
+          isLoading, 
+          error, 
+          setError, 
+          updateTask, 
+          createTask, 
+          deleteTask, 
+          assignTask 
+        } = useTasks(state, isInitialized, filters, logout, navigate);  
   const { users } = useUsers(state, isInitialized);
 
   useEffect(() => {
@@ -74,30 +86,27 @@ const Tasks = () => {
     }
   };
   
-  const handleOpenModal = (task = null) => {
-    setSelectedTask(task);
-    setIsModalOpen(true);
+  const openModal = (type, task = null) => {
+    setModalState({
+      type,
+      isOpen: true,
+      task
+    });
   };
   
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    // Reset selected task after modal closes
+  const closeModal = () => {
+    setModalState(prev => ({
+      ...prev,
+      isOpen: false
+    }));
+        
     setTimeout(() => {
-      setSelectedTask(null);
-    }, 300); // Small delay to allow the modal animation to complete
-  };
-
-  const handleOpenDeleteModal = (task) => {
-    setSelectedTask(task);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    // Reset selected task after modal closes
-    setTimeout(() => {
-      setSelectedTask(null);
-    }, 300); // Small delay to allow the modal animation to complete
+      setModalState(prev => ({
+        ...prev,
+        type: null,
+        task: null
+      }));
+    }, 300);
   };
 
   const handleDeleteTask = async () => {
@@ -106,10 +115,27 @@ const Tasks = () => {
     }
 
     try {
-      await deleteTask(selectedTask);
-      handleCloseDeleteModal();
+      await deleteTask(modalState.task);
+      closeModal();
     } catch (err) {
       console.error('Error deleting task:', err);
+    }
+  };
+
+  const handleAssignTask = async (taskData) => {
+    if (isTokenExpired()) {
+      return;
+    }
+
+    try {
+      const  newTask = {
+        ...modalState.task,
+        user_id: taskData.user_id
+      }
+      await assignTask(newTask);
+      closeModal();
+    } catch (err) {
+      console.error('Error assigning task:', err);
     }
   };
 
@@ -120,21 +146,18 @@ const Tasks = () => {
     }
     
     try {
-      if (selectedTask) {
-        // Update existing task
-        await updateTask(selectedTask.id, taskData);
+      if (modalState.task) {        
+        await updateTask(modalState.task.id, taskData);
       } else {
-        // Create new task
         await createTask(taskData);
       }
-      
-      // Close modal after successful submission
-      handleCloseModal();
+
+      closeModal();
       
     } catch (err) {
       console.error('Error submitting task:', err);
-      setError(`Failed to ${selectedTask ? 'update' : 'create'} task: ${err.message}`);
-      throw err; // Re-throw to let the form component handle it
+      setError(`Failed to ${modalState.task ? 'update' : 'create'} task: ${err.message}`);
+      throw err;
     }
   };
   
@@ -143,6 +166,36 @@ const Tasks = () => {
       <Preloader text="Loading tasks..." />
     );
   }
+
+  const renderModalContent = () => {
+    switch (modalState.type) {
+      case 'edit':
+        return (
+          <TaskForm 
+            task={modalState.task} 
+            onSubmit={handleTaskSubmit} 
+          />
+        );
+      case 'delete':
+        return (
+          <div className="flex flex-col justify-center items-center gap-4">
+            <div className="text-lg font-bold">
+              Would you like to delete this task?
+            </div>
+            <div className="flex gap-4 justify-center items-start">
+              <button className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition-colors" onClick={handleDeleteTask}>Delete</button>
+              <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" onClick={closeModal}>Cancel</button>
+            </div>
+          </div>
+        );
+      case 'assign':
+        return (
+          <AssignForm task={modalState.task} onSubmit={handleAssignTask} users={users} />
+        );
+      default:
+        return null;
+    }
+  };
   
   return (
     <Layout>
@@ -151,7 +204,7 @@ const Tasks = () => {
           <h1 className="text-xl font-bold">Task List</h1>
           <button 
             className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" 
-            onClick={() => handleOpenModal()}
+            onClick={() => openModal('edit')}
           >
             Add Task
           </button>
@@ -181,8 +234,9 @@ const Tasks = () => {
                   key={task.id} 
                   task={task} 
                   handleTaskComplete={handleTaskComplete}
-                  onEdit={() => handleOpenModal(task)}
-                  onDelete={() => handleOpenDeleteModal(task)}
+                  onEdit={() => openModal('edit', task)}
+                  onDelete={() => openModal('delete', task)}
+                  onAssign={() => openModal('assign', task)}
                 />
               ))}
             </div>
@@ -191,22 +245,13 @@ const Tasks = () => {
           )}
         </div>    
       </div>
-      <Modal key={'edit-task-' + selectedTask?.id} isOpen={isModalOpen} onClose={handleCloseModal}>
-        <TaskForm 
-          task={selectedTask} 
-          onSubmit={handleTaskSubmit} 
-        />
-      </Modal>
-      <Modal key={'delete-task-' + selectedTask?.id} isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal}>
-        <div className="flex flex-col justify-center items-center gap-4">
-          <div className="text-lg font-bold">
-            Would you like to delete this task?
-          </div>
-          <div className="flex gap-4 justify-center items-start">
-            <button className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition-colors" onClick={handleDeleteTask}>Delete</button>
-            <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" onClick={handleCloseDeleteModal}>Cancel</button>
-          </div>
-        </div>
+      
+      <Modal 
+        key={`task-modal-${modalState.task?.id}`} 
+        isOpen={modalState.isOpen} 
+        onClose={closeModal}
+      >
+        {renderModalContent()}
       </Modal>
     </Layout>
   );
