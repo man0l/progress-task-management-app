@@ -89,7 +89,7 @@ def tasks():
     else:
         query = db_session.query(Task)
         if 'status' in data:
-            query = query.filter_by(completed=data['status'])
+            query = query.filter_by(completed=data['status'] == 'true')
         if 'user' in data:
             query = query.filter_by(user_id=data['user'])
         user_tasks = query.all()
