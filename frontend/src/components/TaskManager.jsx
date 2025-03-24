@@ -14,6 +14,12 @@ const TaskManager = () => {
     const handleInputChange = (e) => {
         setNewTask({ ...newTask, [e.target.name]: e.target.value });
     };
+
+    return (
+        <div>
+            <h1>Task Manager</h1>
+        </div>
+    )
     
 }
 
