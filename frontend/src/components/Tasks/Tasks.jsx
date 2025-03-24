@@ -9,7 +9,7 @@ import NoTasks from './NoTasks';
 import Preloader from '../common/Preloader';
 import TaskItem from './TaskItem';
 import Modal from '../common/Modal';
-
+import TaskForm from './TaskForm';
 const Tasks = () => {
   const [filters, setFilters] = useState({
     status: '',
@@ -69,6 +69,12 @@ const Tasks = () => {
       setError(`Failed to update task status: ${err.message}`);
     }
   };
+
+  const handleTaskSubmit = async (event) => {
+    event.preventDefault();
+    console.log(event);
+    return false;
+  };
   
   if (!isInitialized) {
     return (
@@ -115,7 +121,7 @@ const Tasks = () => {
         </div>    
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h1>Modal</h1>
+        <TaskForm task={null} form={null} handleSubmit={handleTaskSubmit} />
       </Modal>
     </Layout>
   );
