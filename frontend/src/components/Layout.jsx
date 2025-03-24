@@ -1,5 +1,6 @@
 import Header from './Header';
 import Footer from './Footer';
+import { memo } from 'react';
 
 const Layout = ({ children }) => {
   return (
@@ -11,4 +12,4 @@ const Layout = ({ children }) => {
   );
 };
 
-export default Layout;
+export default memo(Layout);
