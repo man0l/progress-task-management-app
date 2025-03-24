@@ -54,7 +54,7 @@ const Login = () => {
       const data = await response.json();
       
       if (response.status === 200) {
-        login(data.user, data.token);
+        login(data.user, data.access_token);
         navigate('/');
       } else {
         setError(data.message || 'Login failed. Please check your credentials.');
