@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 import os
-from werkzeug.security import generate_password_hash, check_password_hash
 
 from database import init_db, db_session
-from models import User, Task
-from decorators import role_required
+from models import User
 from dotenv import load_dotenv
 
 load_dotenv()
