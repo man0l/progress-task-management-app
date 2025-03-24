@@ -1,7 +1,8 @@
-import { useAuth, logoutUser } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import Navbar from './Navbar';
 import { useNavigate } from 'react-router';
 import { useCallback, memo } from 'react';
+import { logout } from '../services/userService';
 
 const Header = () => {
   const { state, dispatch } = useAuth();
@@ -12,7 +13,8 @@ const Header = () => {
   }, [navigate]);
 
   const handleLogout = useCallback(() => {
-    logoutUser(dispatch);
+    logout();
+    dispatch({ type: 'LOGOUT' });
     navigate('/login');
   }, [dispatch, navigate]);
 

@@ -1,7 +1,9 @@
 import Layout from './Layout';
 import { useState, useEffect } from 'react';
-import { useAuth, loginUser } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router';
+import { login } from '../services/userService';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -24,8 +26,27 @@ const Login = () => {
     setError('');
     
     try {
-      const result = await loginUser(dispatch, email, password);
-      if (!result.success) {
+      const result = await login(email, password);
+      
+      if (result.success) {
+        const token = result.data.access_token;
+        const decodedToken = jwtDecode(token);
+        
+        const user = {
+          id: decodedToken.sub,
+          roles: decodedToken.roles || []
+        };
+        
+        localStorage.setItem('token', token);
+        
+        dispatch({
+          type: 'LOGIN',
+          payload: {
+            user,
+            token
+          }
+        });
+      } else {
         setError(result.error || 'Login failed');
       }
     } catch (err) {
