@@ -36,3 +36,6 @@ You might login in the backend and frontend app with the following credentials f
 ### rest api endpoint
 
 `localhost:5000`
+
+### run tests
+`docker compose exec api bash -c ./run_tests.sh`
