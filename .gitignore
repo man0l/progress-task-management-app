@@ -2,3 +2,7 @@
 api/.env
 __pycache__
 backend/vendor
+frontend/node_modules
+frontend/.env
+frontend/.vite
+frontend/dist
