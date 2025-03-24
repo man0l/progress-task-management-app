@@ -66,7 +66,17 @@ def login():
         return jsonify({"msg": "Bad email or password"}), 401
 
     access_token = create_access_token(identity=user)
-    return jsonify(access_token=access_token)
+
+    # remove pass and pass the user object
+    user_dict = user.__dict__
+    user_dict.pop('_sa_instance_state', None)
+    user_dict.pop('password', None)
+    user_dict.pop('roles', None)
+    
+    return jsonify({
+        "user": user_dict,
+        "access_token": access_token
+    })
 
 @app.route("/tasks", methods=["GET"])
 @jwt_required()
