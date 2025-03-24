@@ -2,19 +2,21 @@ import { useState, useEffect } from 'react';
 import Layout from '../common/Layout';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { HiUserCircle, HiPencil, HiTrash } from "react-icons/hi2";
 import useTasks from '../../hooks/useTasks';
 import useUsers from '../../hooks/useUsers';
 import Filters from './Filters';
 import NoTasks from './NoTasks';
 import Preloader from '../common/Preloader';
 import TaskItem from './TaskItem';
+import Modal from '../common/Modal';
 
 const Tasks = () => {
   const [filters, setFilters] = useState({
     status: '',
     user: ''
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { state, isInitialized, logout, isTokenExpired } = useAuth();
   const navigate = useNavigate();
   const { tasks, isLoading, error, setError, updateTask } = useTasks(state, isInitialized, filters, logout, navigate);  
@@ -79,9 +81,9 @@ const Tasks = () => {
       <div className="p-4">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-xl font-bold">Task List</h1>
-          <Link to="/tasks/add" className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors">
+          <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" onClick={() => setIsModalOpen(true)}>
               Add Task
-          </Link>
+          </button>
         </div>
 
         <Filters 
@@ -112,6 +114,9 @@ const Tasks = () => {
           )}
         </div>    
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h1>Modal</h1>
+      </Modal>
     </Layout>
   );
 };
