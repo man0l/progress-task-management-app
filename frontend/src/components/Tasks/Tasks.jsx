@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import Layout from './Layout';
-import { useAuth } from '../contexts/AuthContext';
+import Layout from '../common/Layout';
+import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { HiUserCircle, HiPencil, HiTrash } from "react-icons/hi2";
-import useTasks from '../hooks/useTasks';
-import useUsers from '../hooks/useUsers';
+import useTasks from '../../hooks/useTasks';
+import useUsers from '../../hooks/useUsers';
 
 const Tasks = () => {
   const [filters, setFilters] = useState({

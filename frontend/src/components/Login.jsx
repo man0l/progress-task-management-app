@@ -1,20 +1,15 @@
-import Layout from './Layout';
+import Layout from './common/Layout';
 import { useState, useEffect, useCallback } from 'react';
-import { useDebounce } from '../hooks/useDebounce';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputPassword, setInputPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const { state, login, isInitialized } = useAuth();
-  const debouncedEmail = useDebounce(inputEmail, 400);
-  const debouncedPassword = useDebounce(inputPassword, 400);
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -22,14 +17,6 @@ const Login = () => {
       navigate('/');
     }
   }, [state.isAuthenticated, navigate, isInitialized]);
-  
-  useEffect(() => {
-    setEmail(debouncedEmail);
-  }, [debouncedEmail]);
-  
-  useEffect(() => {
-    setPassword(debouncedPassword);
-  }, [debouncedPassword]);
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -70,9 +57,9 @@ const Login = () => {
   const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
     if(name === 'email') {
-      setInputEmail(value);
+      setEmail(value);
     } else if(name === 'password') {
-      setInputPassword(value);
+      setPassword(value);
     }
   }, []);
 
@@ -91,7 +78,7 @@ const Login = () => {
                       className="w-full py-2 px-3 shadow appearance-none leading-tight" 
                       onChange={handleInputChange} 
                       name="email" 
-                      value={inputEmail}
+                      value={email}
                       disabled={isLoading} 
                     />
                 </div>
@@ -103,7 +90,7 @@ const Login = () => {
                       className="w-full py-2 px-3 shadow appearance-none leading-tight" 
                       onChange={handleInputChange} 
                       name="password" 
-                      value={inputPassword}
+                      value={password}
                       disabled={isLoading} 
                     />
                 </div>
