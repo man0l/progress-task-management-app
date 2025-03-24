@@ -38,4 +38,15 @@ const apiCreateTask = async (token, task) => {
   return response;
 };
 
-export { apiFetchTasks, apiUpdateTask, apiCreateTask };
+const apiDeleteTask = async (token, task) => {
+  const response = await fetch(`http://localhost:5000/tasks/${task.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+  return response;
+};
+
+export { apiFetchTasks, apiUpdateTask, apiCreateTask, apiDeleteTask };

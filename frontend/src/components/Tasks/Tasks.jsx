@@ -18,11 +18,12 @@ const Tasks = () => {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   
   const { state, isInitialized, logout, isTokenExpired } = useAuth();
   const navigate = useNavigate();
-  const { tasks, isLoading, error, setError, updateTask, createTask } = useTasks(state, isInitialized, filters, logout, navigate);  
+  const { tasks, isLoading, error, setError, updateTask, createTask, deleteTask } = useTasks(state, isInitialized, filters, logout, navigate);  
   const { users } = useUsers(state, isInitialized);
 
   useEffect(() => {
@@ -84,6 +85,32 @@ const Tasks = () => {
     setTimeout(() => {
       setSelectedTask(null);
     }, 300); // Small delay to allow the modal animation to complete
+  };
+
+  const handleOpenDeleteModal = (task) => {
+    setSelectedTask(task);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    // Reset selected task after modal closes
+    setTimeout(() => {
+      setSelectedTask(null);
+    }, 300); // Small delay to allow the modal animation to complete
+  };
+
+  const handleDeleteTask = async () => {
+    if (isTokenExpired()) {
+      return;
+    }
+
+    try {
+      await deleteTask(selectedTask);
+      handleCloseDeleteModal();
+    } catch (err) {
+      console.error('Error deleting task:', err);
+    }
   };
 
   const handleTaskSubmit = async (taskData) => {
@@ -155,6 +182,7 @@ const Tasks = () => {
                   task={task} 
                   handleTaskComplete={handleTaskComplete}
                   onEdit={() => handleOpenModal(task)}
+                  onDelete={() => handleOpenDeleteModal(task)}
                 />
               ))}
             </div>
@@ -163,11 +191,22 @@ const Tasks = () => {
           )}
         </div>    
       </div>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+      <Modal key={'edit-task-' + selectedTask?.id} isOpen={isModalOpen} onClose={handleCloseModal}>
         <TaskForm 
           task={selectedTask} 
           onSubmit={handleTaskSubmit} 
         />
+      </Modal>
+      <Modal key={'delete-task-' + selectedTask?.id} isOpen={isDeleteModalOpen} onClose={handleCloseDeleteModal}>
+        <div className="flex flex-col justify-center items-center gap-4">
+          <div className="text-lg font-bold">
+            Would you like to delete this task?
+          </div>
+          <div className="flex gap-4 justify-center items-start">
+            <button className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600 transition-colors" onClick={handleDeleteTask}>Delete</button>
+            <button className="bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600 transition-colors" onClick={handleCloseDeleteModal}>Cancel</button>
+          </div>
+        </div>
       </Modal>
     </Layout>
   );

@@ -1,4 +1,4 @@
-import { apiFetchTasks, apiUpdateTask, apiCreateTask } from '../services/taskService';
+import { apiFetchTasks, apiUpdateTask, apiCreateTask, apiDeleteTask } from '../services/taskService';
 import { useState, useEffect } from 'react';
 
 const useTasks = (state, isInitialized, filters, logout, navigate) => {
@@ -99,7 +99,30 @@ const useTasks = (state, isInitialized, filters, logout, navigate) => {
     }
   };
 
-  return { tasks, setTasks, isLoading, error, setError, updateTask, createTask };
+  const deleteTask = async (task) => {
+    try {
+      const response = await apiDeleteTask(state.token, task);
+
+      if (response.status === 401) {
+        setError("Your session has expired. Please log in again.");
+        logout();
+        navigate('/login');
+        return;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Failed to delete task: ${response.status} ${response.statusText}`);
+      }
+
+      setTasks(prev => prev.filter(prevTask => prevTask.id !== task.id));
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      setError(`Failed to delete task: ${err.message}`);
+      throw err;
+    }
+  };
+
+  return { tasks, setTasks, isLoading, error, setError, updateTask, createTask, deleteTask };
 };
 
 export default useTasks;
