@@ -24,8 +24,18 @@ Copy .env.example to .env
 
 ### Navigate to the frontend app
 
-`localhost:3000`
+`localhost:5173`
 
-### Navigate to the rest api
+### Login 
+You might login in the backend and frontend app with the following credentials from seed.py:
 
-`localhost:8080/api`
+`admin1@example.com`
+
+`adminpassword`
+
+### rest api endpoint
+
+`localhost:5000`
+
+### run tests
+`docker compose exec api bash -c ./run_tests.sh`
