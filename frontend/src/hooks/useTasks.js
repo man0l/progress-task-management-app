@@ -89,9 +89,9 @@ const useTasks = (state, isInitialized, filters, logout, navigate) => {
         throw new Error(`Failed to create task: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
-      setTasks(prev => [...prev, data.task]);
-      return data.task;
+      const newTask = await response.json();
+      setTasks(prev => [...prev, newTask]);
+      return newTask;
     } catch (err) {
       console.error('Error creating task:', err);
       setError(`Failed to create task: ${err.message}`);
