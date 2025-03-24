@@ -1,7 +1,7 @@
 import { HiUserCircle, HiPencil, HiTrash } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
 
-export default function TaskItem({ task, handleTaskComplete, onEdit, onDelete, onAssign }) {
+export default function TaskItem({ task, handleTaskComplete, showControls, onEdit, onDelete, onAssign }) {
     return (
         <div className="p-4 bg-white rounded shadow-sm hover:shadow-md transition-shadow" id={`task-${task.id}`} key={task.id}>
                   <div className="flex justify-between items-center">
@@ -21,8 +21,10 @@ export default function TaskItem({ task, handleTaskComplete, onEdit, onDelete, o
                       <span className="text-sm text-gray-500">
                         {new Date(task.created_at).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </span>
-                      <button 
-                        onClick={onAssign} 
+                      {showControls && (
+                        <>
+                          <button 
+                            onClick={onAssign} 
                         className="size-5 text-blue-500 hover:text-blue-700 transition-colors"
                       >
                         <HiUserCircle />
@@ -41,6 +43,8 @@ export default function TaskItem({ task, handleTaskComplete, onEdit, onDelete, o
                       >
                         <HiTrash />
                       </button>
+                        </>
+                      )}
                     </div>
                   </div>
                   <div className="text-sm font-normal text-gray-500 mt-2">{task.description}</div>

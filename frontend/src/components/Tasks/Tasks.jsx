@@ -233,6 +233,7 @@ const Tasks = () => {
                 <TaskItem 
                   key={task.id} 
                   task={task} 
+                  showControls={true}
                   handleTaskComplete={handleTaskComplete}
                   onEdit={() => openModal('edit', task)}
                   onDelete={() => openModal('delete', task)}
