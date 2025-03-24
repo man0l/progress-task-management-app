@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
+from flask_cors import CORS
 import os
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -11,6 +12,7 @@ load_dotenv()
 
 init_db()
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET')
 jwt = JWTManager(app)
 
