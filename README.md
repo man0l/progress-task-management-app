@@ -2,8 +2,8 @@
 
 ## How to run the app
 ### ENV Variables
-Copy .env.example to .env
 
+I have copied directly the .env files for easier running. The assumption is it is for testing purposes and not in production.
 ### Build
 
 `docker compose build`
