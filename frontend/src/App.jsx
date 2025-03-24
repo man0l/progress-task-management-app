@@ -1,27 +1,29 @@
+import React, { memo } from 'react';
 import Home from './components/Home'
 import Login from './components/Login'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import TaskManager from './components/TaskManager'
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import './App.css'
 
-function App() {
-
+const App = memo(() => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>          
           <Route path="/login" element={<Login />} />        
-          
+          <Route path="/404-error" element={<div>404 Error</div>} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/tasks" element={<TaskManager />} />
           </Route>
+          
+          <Route path="*" element={<Navigate to="/404-error" replace />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   )
-}
+});
 
 export default App
